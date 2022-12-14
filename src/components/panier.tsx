@@ -1,85 +1,44 @@
 
-import React from "react";
-import { TrashIcon } from '@heroicons/react/24/outline';
 
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
-import {
-  MaterialIcons,
-} from "@expo/vector-icons";
+import React, { useContext, useState } from "react";
 
-class Pulsars extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectAll: false,
-      cartItemsIsLoading: false,
-      cartItems: [
-        /* Sample data from walmart */
-        {
-          itemId: "1",
-          name: "Paracetamol",
-          quantity: "1kg",
-          status: "Medicament pour mot de tete ",
-          thumbnailImage:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNlxQOOge1VXvw3rAbVhXuv21ZyfZMAgKYbZltmO9QuA&s",
-          qty: 1,
-          salePrice: "1200",
-          checked: 0,
-        },
-        {
-          itemId: "2",
-          name: "Paracetamol",
-          quantity: "500g",
-          status: "Medicament pour mot de tete ",
-          thumbnailImage:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNoTsl9Gq0E3r-MZrA9ZfBbJcPlMkcJJIxJDtQ_jlDIsLFxBrBU2jTxJ766aZq6T7GMnA&usqp=CAU",
-          qty: 1,
-          salePrice: "1500",
-          checked: 0,
-        },
-        {
-          itemId: "3",
-          name: "Doliprane",
-          quantity: "500g",
-          status: "Medicament pour mot de tete ",
-          thumbnailImage:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSL85cuqLaaowIoMxxpj67ei8OG_VAr45yX77BnOpauEQ&s",
-          qty: 1,
-          salePrice: "123",
-          checked: 0,
-        },
-        // {
-        //   itemId: "4",
-        //   name: "Doliprane",
-        //   quantity: "500g",
-        //   status: "Medicament pour mot de tete ",
-        //   thumbnailImage:
-        //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNoTsl9Gq0E3r-MZrA9ZfBbJcPlMkcJJIxJDtQ_jlDIsLFxBrBU2jTxJ766aZq6T7GMnA&usqp=CAU",
-        //   qty: 5,
-        //   salePrice: "1200",
-        //   checked: 0,
-        // },
-        
-       
-     
-      ],
-    };
-  }
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Image, ActivityIndicator, Alert } from "react-native";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import Context from "../context/products";
 
-  
-
-
-  deleteHandler = (index) => {
+const Panier = ({}) => {  
+    const cartItemsIsLoading = false;
+    const {  } = useContext(Context)
+     const [cartItems, setCartItems] = useState([
+            {
+              id: "1",
+              name: "Orid Dhall",
+              quantity: "200g",
+              status: "Currently Not Available",
+              thumbnailImage:
+                "https://annaistores.com/as_content/uploads/2020/05/81f17QBywiL._SL1500_.jpg",
+              qty: 1,
+              salePrice: "123",
+              checked: 0,
+            },
+            {
+              itemId: "2",
+              name: "Orid Dhall",
+              quantity: "500g",
+              status: "Currently Not Available",
+              thumbnailImage:
+                "https://annaistores.com/as_content/uploads/2020/05/81f17QBywiL._SL1500_.jpg",
+              qty: 1,
+              salePrice: "123",
+              checked: 0,
+            },
+           
+          
+    ])
+    
+  const deleteHandler = (i) => {
     Alert.alert(
-      "Are you sure you want to delete this item from your cart?",
+      "etes vous sure de vouloir supprimer ce produit de votre panier?",
       "",
       [
         {
@@ -88,36 +47,28 @@ class Pulsars extends React.Component {
           style: "cancel",
         },
         {
-            text: "Delete",
-            onPress: () => {
-              let updatedCart = this.state.cartItems; /* Clone it first */
-              updatedCart.splice(
-                index,
-                1
-              ); /* Remove item from the cloned cart state */
-              this.setState(updatedCart); /* Update the state */
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-    };
-  
-    quantityHandler = (action, index) => {
-      const newItems = [...this.state.cartItems]; // clone the array
-  
-      let currentQty = newItems[index]["qty"];
-  
-      if (action == "more") {
-        newItems[index]["qty"] = currentQty + 1;
-      } else if (action == "less") {
-        newItems[index]["qty"] = currentQty > 1 ? currentQty - 1 : 1;
-      }
-      this.setState({ cartItems: newItems }); // set new state
+          text: "Delete",
+          onPress: () => setCartItems(i),
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
-  subtotalPrice = () => {
-    const { cartItems } = this.state;
+  const quantityHandler = (action, index) => {
+    const newItems = [...action, index]; 
+
+    let currentQty = newItems[index]["qty"];
+
+    if (action == "more") {
+      newItems[index]["qty"] = currentQty + 1;
+    } else if (action == "less") {
+      newItems[index]["qty"] = currentQty > 1 ? currentQty - 1 : 1;
+    }
+
+  };
+
+  const subtotalPrice = () => {
     if (cartItems) {
       return cartItems.reduce(
         (sum, item) =>
@@ -128,129 +79,125 @@ class Pulsars extends React.Component {
     return 0;
   };
 
-  render() {
     const styles = StyleSheet.create({
       centerElement: { justifyContent: "center", alignItems: "center" },
     });
 
-    const { cartItems, cartItemsIsLoading } = this.state;
     return (
       <View style={{ flex: 1, backgroundColor: "#f6f6f6" }}>
         <View
           style={{
             flexDirection: "row",
             backgroundColor: "#fff",
-            marginBottom: 12,
-          
+            marginBottom: 10,
           }}
         >
-          {/* ² */}
-          <View style={[styles.centerElement, { height: 10 }]}>
+          <View style={[styles.centerElement, { width: 50, height: 50 }]}>
+            <Ionicons name="ios-cart" size={25} color="#000" />
+          </View>
+          <View style={[styles.centerElement, { height: 50 }]}>
             <Text style={{ fontSize: 18, color: "#000" }}>Panier d'achat</Text>
           </View>
         </View>
-
+        {/* {cartItems === 0 && <Text >Votre panier d'achat est vide</Text>} */}
         {cartItemsIsLoading ? (
           <View style={[styles.centerElement, { height: 300 }]}>
             <ActivityIndicator size="large" color="#ef5739" />
+           
           </View>
         ) : (
+           
           <ScrollView>
-            {cartItems &&
-              cartItems.map((item, i) => (
-                <View
-                  key={i}
-                  style={{
-                    flexDirection: "row",
-                    backgroundColor: "#fff",
-                    marginBottom: 2,
-                    height: 120,
-                }}
-              >
-               
-                <View
-                  style={{
-                    flexDirection: "row",
-                    flexGrow: 1,
-                    flexShrink: 1,
-                    alignSelf: "center",
-                    margin: 12
-                  }}
-                  >
-                    <TouchableOpacity
-                      onPress={() => {
-                        // this.props.navigation.navigate('ProductDetails', {productDetails: item})
-                      }}
-                      style={{ paddingRight: 10 }}
-                    >
-                      <Image
-                        source={{ uri: item.thumbnailImage }}
-                        style={[
-                          styles.centerElement,
-                          { height: 80, width: 80, borderRadius: 50, backgroundColor: "#eeeeee" },
-                        ]}
-                      />
-                    </TouchableOpacity>
-                    <View
-                      style={{
-                        flexGrow: 1,
-                        flexShrink: 1,
-                        alignSelf: "center",
-                      }}
-                    >
-                      <Text numberOfLines={1} style={{ fontSize: 15 }}>
-                        {item.name}
-                      </Text>
-                      <Text numberOfLines={1} style={{ color: "#8f8f8f" }}>
-                      {item.quantity}
-                      </Text>
-                      <Text numberOfLines={1} style={{ color: "#333333" }}>
-                        {item.qty * item.salePrice} Frs
-                      </Text>
-                      <Text>{item.status}</Text>
-                      <View style={{ flexDirection: "row" }}>
-                        <TouchableOpacity
-                          onPress={() => this.quantityHandler("less", i)}
-                          style={{ borderWidth: 1, borderColor: "#cccccc" }}
-                        >
-                          <MaterialIcons
-                            name="remove"
-                            size={22}
-                            color="#cccccc"
-                          />
-                        </TouchableOpacity>
-                        <Text
-                          style={{
-                            borderTopWidth: 1,
-                            borderBottomWidth: 1,
-                            borderColor: "#cccccc",
-                            paddingHorizontal: 7,
-                            paddingTop: 3,
-                            color: "#bbbbbb",
-                            fontSize: 13,
-                        }}
-                        >
-                          {item.qty}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => this.quantityHandler("more", i)}
-                          style={{ borderWidth: 1, borderColor: "#cccccc" }}
-                        >
-                          <MaterialIcons name="add" size={22} color="#cccccc" />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-                  <View style={[styles.centerElement, { width: 60 }]}>
-                    <TouchableOpacity
-                      style={[styles.centerElement, { width: 32, height: 32 }]}
-                      onPress={() => this.deleteHandler(i)}
-                    >
-                      <TrashIcon name="md-trash" size={25} color="#ee4d2d" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ))}
+            {cartItems?.map((item, i) => (
+                            <View
+                                key={i}
+                                style={{
+                                    flexDirection: "row",
+                                    backgroundColor: "#fff",
+                                    marginBottom: 2,
+                                    height: 120,
+                                }}
+                            >
+
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        flexGrow: 1,
+                                        flexShrink: 1,
+                                        alignSelf: "center",
+                                    }}
+                                >
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                        } }
+                                        style={{ paddingRight: 10 }}
+                                    >
+                                        <Image
+                                            source={{ uri: item.thumbnailImage }}
+                                            style={[
+                                                styles.centerElement,
+                                                { height: 60, width: 60, backgroundColor: "#eeeeee" },
+                                            ]} />
+                                    </TouchableOpacity>
+                                    <View
+                                        style={{
+                                            flexGrow: 1,
+                                            flexShrink: 1,
+                                            alignSelf: "center",
+                                        }}
+                                    >
+                                        <Text numberOfLines={1} style={{ fontSize: 15 }}>
+                                            {item.name}
+                                        </Text>
+                                        <Text numberOfLines={1} style={{ color: "#8f8f8f" }}>
+                                            {item.quantity}
+                                        </Text>
+                                        <Text numberOfLines={1} style={{ color: "#333333" }}>
+                                            {item.qty *  item.salePrice} Frs
+                                        </Text>
+                                        <Text>{item.status}</Text>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <TouchableOpacity
+                                                onPress={() => quantityHandler("less", item)}
+                                                style={{ borderWidth: 1, borderColor: "#cccccc" }}
+                                            >
+                                                <MaterialIcons
+                                                    name="remove"
+                                                    size={22}
+                                                    color="#cccccc" />
+                                            </TouchableOpacity>
+                                            <Text
+                                                style={{
+                                                    borderTopWidth: 1,
+                                                    borderBottomWidth: 1,
+                                                    borderColor: "#cccccc",
+                                                    paddingHorizontal: 7,
+                                                    paddingTop: 3,
+                                                    color: "#bbbbbb",
+                                                    fontSize: 13,
+                                                }}
+                                            >
+                                                {item.qty}
+                                            </Text>
+                                            <TouchableOpacity
+                                                onPress={() => quantityHandler("more", i)}
+                                                style={{ borderWidth: 1, borderColor: "#cccccc" }}
+                                            >
+                                                <MaterialIcons name="add" size={22} color="#cccccc" />
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={[styles.centerElement, { width: 60 }]}>
+                                    <TouchableOpacity
+                                        style={[styles.centerElement, { width: 32, height: 32 }]}
+                                        onPress={() => deleteHandler(i)}
+                                    >
+                                        <Ionicons name="md-trash" size={25} color="#ee4d2d" />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        ))}
           </ScrollView>
         )}
 
@@ -280,7 +227,7 @@ class Pulsars extends React.Component {
               ></View>
             </View>
             <View style={{ flexDirection: "row" }}>
-         
+             
               <View
                 style={{
                   flexDirection: "row",
@@ -290,22 +237,7 @@ class Pulsars extends React.Component {
                   alignItems: "center",
                 }}
               >
-                 <TouchableOpacity
-                style={[
-                  styles.centerElement,
-                  {
-                    backgroundColor: "#0faf9a",
-                    width: 100,
-                    height: 35,
-                    borderRadius: 5,
-                    margin: 22,
-                  },
-                ]}
-                onPress={() => console.log("test")}
-              >
-                <Text style={{ color: "#ffffff" }}>Prescription</Text>
-              </TouchableOpacity>
-                
+                <Text style={{ color: "#0faf9a"}}>Prescription</Text>
                 <View
                   style={{
                     flexDirection: "row",
@@ -313,19 +245,18 @@ class Pulsars extends React.Component {
                     alignItems: "center",
                   }}
                 >
-                  <Text style={{ color: "#8f8f8f" }}>Total: </Text>
-                  <Text>{this.subtotalPrice().toFixed(2)} Frs</Text>
+                  <Text style={{ color: "#8f8f8f" }}>SubTotal: </Text>
+                  <Text>{subtotalPrice().toFixed(2)} Frs</Text>
                 </View>
               </View>
-           
             </View>
             <View
               style={{
                 flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
+                justifyContent: "flex-end",
                 height: 32,
                 paddingRight: 20,
+                alignItems: "center",
               }}
             >
               <TouchableOpacity
@@ -334,27 +265,13 @@ class Pulsars extends React.Component {
                   {
                     backgroundColor: "#0faf9a",
                     width: 100,
-                    height: 35,
+                    height: 25,
                     borderRadius: 5,
                   },
                 ]}
                 onPress={() => console.log("test")}
               >
-                <Text style={{ color: "#ffffff" }}>Vider Panier</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.centerElement,
-                  {
-                    backgroundColor: "#0faf9a",
-                    width: 100,
-                    height: 35,
-                    borderRadius: 10,
-                  },
-                ]}
-                onPress={() => console.log("test")}
-              >
-                <Text style={{ color: "#ffffff" }}>Ajout au Panier</Text>
+                <Text style={{ color: "#ffffff" }}>Ajout Panier</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -362,5 +279,5 @@ class Pulsars extends React.Component {
       </View>
     );
   }
-}
-export default Pulsars;
+
+export default Panier;
